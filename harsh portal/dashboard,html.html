@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - HARSHPORTAL</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Dashboard</h1>
+    <p id="totalOrders">Total Orders: 0</p>
+    <p id="totalSales">Total Sales: $0.00</p>
+
+    <p><a href="index.html">Back to Home</a></p>
+  </div>
+
+  <script>
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    function updateDashboard() {
+      const totalOrders = orders.length;
+      const totalSales = orders.reduce((sum, order) => sum + order.total, 0);
+
+      document.getElementById('totalOrders').textContent = `Total Orders: ${totalOrders}`;
+      document.getElementById('totalSales').textContent = `Total Sales: $${totalSales.toFixed(2)}`;
+    }
+
+    updateDashboard();
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menu Management - HARSHPORTAL</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Menu Management</h1>
+    <ul id="menuList"></ul>
+
+    <h3>Add New Menu Item</h3>
+    <form id="addMenuItemForm">
+      <input type="text" id="itemName" placeholder="Item Name" required />
+      <input type="number" id="itemPrice" placeholder="Price" min="0" step="0.01" required />
+      <button type="submit">Add Item</button>
+    </form>
+
+    <p><a href="index.html">Back to Home</a></p>
+  </div>
+
+  <script>
+    // Load menu from localStorage or empty array
+    let menu = JSON.parse(localStorage.getItem('menu')) || [];
+
+    function renderMenu() {
+      const menuList = document.getElementById('menuList');
+      if(menu.length === 0) {
+        menuList.innerHTML = '<li>No menu items yet</li>';
+      } else {
+        menuList.innerHTML = menu.map((item, i) => 
+          `<li>${item.name}: $${item.price.toFixed(2)} <button onclick="deleteItem(${i})">Delete</button></li>`
+        ).join('');
+      }
+    }
+
+    function deleteItem(index) {
+      menu.splice(index, 1);
+      localStorage.setItem('menu', JSON.stringify(menu));
+      renderMenu();
+    }
+
+    document.getElementById('addMenuItemForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('itemName').value.trim();
+      const price = parseFloat(document.getElementById('itemPrice').value);
+      if(name && price >= 0) {
+        menu.push({name, price});
+        localStorage.setItem('menu', JSON.stringify(menu));
+        renderMenu();
+        e.target.reset();
+      }
+    });
+
+    renderMenu();
+  </script>
+</body>
+</html>

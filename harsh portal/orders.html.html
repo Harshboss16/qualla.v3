@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Punching - HARSHPORTAL</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Order Punching</h1>
+    <ul id="ordersList"></ul>
+
+    <h3>Place New Order</h3>
+    <form id="placeOrderForm">
+      <input type="text" id="customerName" placeholder="Customer Name" required />
+      <input type="text" id="orderDetails" placeholder="Order Details" required />
+      <input type="number" id="orderTotal" placeholder="Total Price" min="0" step="0.01" required />
+      <button type="submit">Place Order</button>
+    </form>
+
+    <p><a href="index.html">Back to Home</a></p>
+  </div>
+
+  <script>
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    function renderOrders() {
+      const ordersList = document.getElementById('ordersList');
+      if(orders.length === 0) {
+        ordersList.innerHTML = '<li>No orders yet</li>';
+      } else {
+        ordersList.innerHTML = orders.map((o, i) => 
+          `<li>${o.customer}: ${o.details} ($${o.total.toFixed(2)}) <button onclick="deleteOrder(${i})">Delete</button></li>`
+        ).join('');
+      }
+    }
+
+    function deleteOrder(index) {
+      orders.splice(index, 1);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      renderOrders();
+    }
+
+    document.getElementById('placeOrderForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const customer = document.getElementById('customerName').value.trim();
+      const details = document.getElementById('orderDetails').value.trim();
+      const total = parseFloat(document.getElementById('orderTotal').value);
+      if(customer && details && total >= 0) {
+        orders.push({customer, details, total});
+        localStorage.setItem('orders', JSON.stringify(orders));
+        renderOrders();
+        e.target.reset();
+      }
+    });
+
+    renderOrders();
+  </script>
+</body>
+</html>
+
